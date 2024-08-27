@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const Register = () => {
   const { registerUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
+
   const handleRegister = (e) => {
     e.preventDefault();
     const name = e.target.name.value;
@@ -10,6 +12,19 @@ const Register = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const confirmPassword = e.target.confirmPassword.value;
+
+    if (password != confirmPassword) {
+      setError("Password do not Match!!");
+      return;
+    } else if (password.length < 6) {
+      setError("Password length should be 6 Character!!");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      //regex used
+      setError("Password must contain at least one uppercase letter.");
+      return;
+    }
+    setError("");
 
     console.log(name, photo, email, password, confirmPassword);
     registerUser(email, password);
@@ -63,6 +78,7 @@ const Register = () => {
             className="input input-bordered w-full "
           />
         </div>
+        {error && <small className="text-red-800 py-2">{error}</small>}
         <button type="submit" className="btn btn-primary w-full my-4">
           Register
         </button>
